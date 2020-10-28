@@ -1,18 +1,22 @@
 import core from "@actions/core";
 import github from "@actions/github";
 import fg from "fast-glob";
-import { CHECK_NAME, REPO } from "./constants";
 import analyze from "./analyze";
+
+const CHECK_NAME = "TypeProf";
 
 // eslint-disable-next-line max-lines-per-function, max-statements
 const main = async (): Promise<void> => {
   try {
     const octokit = github.getOctokit(core.getInput("token"));
+
+    const { owner, repo } = github.context.repo;
+
     const {
       data: { id: checkId },
     } = await octokit.checks.create({
-      owner: REPO.owner,
-      repo: REPO.repo,
+      owner,
+      repo,
       name: CHECK_NAME,
       head_sha: github.context.sha,
       status: "in_progress",
@@ -25,8 +29,8 @@ const main = async (): Promise<void> => {
 
     await octokit.checks.update({
       check_run_id: checkId,
-      owner: REPO.owner,
-      repo: REPO.repo,
+      owner,
+      repo,
       output: {
         summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
 
@@ -43,8 +47,8 @@ const main = async (): Promise<void> => {
 
     await octokit.checks.update({
       check_run_id: checkId,
-      owner: REPO.owner,
-      repo: REPO.repo,
+      owner,
+      repo,
       conclusion: success ? "success" : "failure",
       status: "completed",
       completed_at: new Date().toISOString(),

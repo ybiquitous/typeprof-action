@@ -56,23 +56,6 @@ exports.default = analyze;
 
 /***/ }),
 
-/***/ 5105:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-"use strict";
-
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CHECK_NAME = exports.REPO = void 0;
-const github_1 = __importDefault(__webpack_require__(5438));
-exports.REPO = github_1.default.context.repo;
-exports.CHECK_NAME = "TypeProf";
-
-
-/***/ }),
-
 /***/ 3109:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
@@ -85,16 +68,17 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 const core_1 = __importDefault(__webpack_require__(2186));
 const github_1 = __importDefault(__webpack_require__(5438));
 const fast_glob_1 = __importDefault(__webpack_require__(3664));
-const constants_1 = __webpack_require__(5105);
 const analyze_1 = __importDefault(__webpack_require__(53));
+const CHECK_NAME = "TypeProf";
 // eslint-disable-next-line max-lines-per-function, max-statements
 const main = async () => {
     try {
         const octokit = github_1.default.getOctokit(core_1.default.getInput("token"));
+        const { owner, repo } = github_1.default.context.repo;
         const { data: { id: checkId }, } = await octokit.checks.create({
-            owner: constants_1.REPO.owner,
-            repo: constants_1.REPO.repo,
-            name: constants_1.CHECK_NAME,
+            owner,
+            repo,
+            name: CHECK_NAME,
             head_sha: github_1.default.context.sha,
             status: "in_progress",
             started_at: new Date().toISOString(),
@@ -104,8 +88,8 @@ const main = async () => {
         const success = errors.length === 0;
         await octokit.checks.update({
             check_run_id: checkId,
-            owner: constants_1.REPO.owner,
-            repo: constants_1.REPO.repo,
+            owner,
+            repo,
             output: {
                 summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
                 // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
@@ -120,8 +104,8 @@ const main = async () => {
         });
         await octokit.checks.update({
             check_run_id: checkId,
-            owner: constants_1.REPO.owner,
-            repo: constants_1.REPO.repo,
+            owner,
+            repo,
             conclusion: success ? "success" : "failure",
             status: "completed",
             completed_at: new Date().toISOString(),
