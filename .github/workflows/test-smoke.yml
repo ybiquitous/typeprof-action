@@ -19,6 +19,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/*.rb
+        continue-on-error: true
 
   test-bundler:
     runs-on: ubuntu-latest
@@ -33,3 +34,4 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/*.rb
+        continue-on-error: true
