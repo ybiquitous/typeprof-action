@@ -65,19 +65,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.HEAD_SHA = exports.CHECK_NAME = exports.REPO = void 0;
+exports.CHECK_NAME = exports.REPO = void 0;
 const github_1 = __importDefault(__webpack_require__(5438));
 exports.REPO = github_1.default.context.repo;
 exports.CHECK_NAME = "TypeProf";
-exports.HEAD_SHA = (() => {
-    var _a, _b;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-    const sha = (_b = (_a = github_1.default.context.payload.pull_request) === null || _a === void 0 ? void 0 : _a.head) === null || _b === void 0 ? void 0 : _b.sha;
-    if (typeof sha === "string") {
-        return sha;
-    }
-    return github_1.default.context.sha;
-})();
 
 
 /***/ }),
@@ -104,7 +95,7 @@ const main = async () => {
             owner: constants_1.REPO.owner,
             repo: constants_1.REPO.repo,
             name: constants_1.CHECK_NAME,
-            head_sha: constants_1.HEAD_SHA,
+            head_sha: github_1.default.context.sha,
             status: "in_progress",
             started_at: new Date().toISOString(),
         });

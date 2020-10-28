@@ -1,7 +1,7 @@
 import core from "@actions/core";
 import github from "@actions/github";
 import fg from "fast-glob";
-import { CHECK_NAME, HEAD_SHA, REPO } from "./constants";
+import { CHECK_NAME, REPO } from "./constants";
 import analyze from "./analyze";
 
 // eslint-disable-next-line max-lines-per-function, max-statements
@@ -14,7 +14,7 @@ const main = async (): Promise<void> => {
       owner: REPO.owner,
       repo: REPO.repo,
       name: CHECK_NAME,
-      head_sha: HEAD_SHA,
+      head_sha: github.context.sha,
       status: "in_progress",
       started_at: new Date().toISOString(),
     });
