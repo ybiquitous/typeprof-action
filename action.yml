@@ -2,12 +2,13 @@ name: "typeprof-action"
 description: "GitHub Action for Ruby TypeProf"
 author: "Masafumi Koba"
 inputs:
-  token:
-    description: "GitHub token"
-    required: true
   file:
     description: "Checked file(s). Glob is available."
     required: true
+  token:
+    description: "GitHub token"
+    required: false
+    default: ${{ github.token }}
 runs:
   using: "node12"
   main: "dist/index.js"

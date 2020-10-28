@@ -17,7 +17,6 @@ jobs:
       - run: gem install typeprof
       - uses: ./
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/valid.rb
 
   invalid:
@@ -30,7 +29,6 @@ jobs:
       - run: gem install typeprof
       - uses: ./
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/invalid.rb
         continue-on-error: true
 
@@ -45,6 +43,6 @@ jobs:
       - run: bundle add typeprof
       - uses: ./
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/invalid.rb
+          token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
