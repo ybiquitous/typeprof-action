@@ -7,7 +7,7 @@ on:
     branches: ["**"]
 
 jobs:
-  test:
+  valid:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -18,10 +18,23 @@ jobs:
       - uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          file: test/smoke/*.rb
+          file: test/smoke/valid.rb
+
+  invalid:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - run: gem install typeprof
+      - uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          file: test/smoke/invalid.rb
         continue-on-error: true
 
-  test-bundler:
+  invalid-bundler:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -33,5 +46,5 @@ jobs:
       - uses: ./
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          file: test/smoke/*.rb
+          file: test/smoke/invalid.rb
         continue-on-error: true
