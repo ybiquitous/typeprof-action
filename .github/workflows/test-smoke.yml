@@ -19,3 +19,17 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           file: test/smoke/*.rb
+
+  test-bundler:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - run: bundle init
+      - run: bundle add typeprof
+      - uses: ./
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          file: test/smoke/*.rb
