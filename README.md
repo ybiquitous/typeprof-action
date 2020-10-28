@@ -21,7 +21,7 @@ jobs:
         with:
           ruby-version: 2.7
       - run: gem install typeprof
-      - uses: ybiquitous/typeprof-action@master
+      - uses: ybiquitous/typeprof-action@main
         with:
           file: lib/foo.rb
           # file: script/*.rb
