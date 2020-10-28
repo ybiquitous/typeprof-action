@@ -32,7 +32,7 @@ jobs:
           file: test/smoke/invalid.rb
         continue-on-error: true
 
-  invalid-bundler:
+  bundler:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -46,3 +46,15 @@ jobs:
           file: test/smoke/invalid*.rb
           token: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
+
+  no-files:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - run: gem install typeprof
+      - uses: ./
+        with:
+          file: *.rb
