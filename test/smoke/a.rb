@@ -1,5 +1,5 @@
 def foo(a)
-  a.foo
+  a.to_s
 end
 
 ret = foo("")
