@@ -21,7 +21,7 @@ jobs:
         with:
           ruby-version: 2.7
       - run: gem install typeprof
-      - uses: ybiquitous/npm-audit-fix-action@v2
+      - uses: ybiquitous/typeprof-action@master
         with:
           file: lib/foo.rb
           # file: script/*.rb
