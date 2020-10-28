@@ -107,7 +107,11 @@ const main = async () => {
         });
         const [errors, success] = await core.group("Analyze files", async () => {
             const files = await fast_glob_1.default(core.getInput("file"));
+            core.info("Input files:");
+            files.forEach((file) => core.info(file));
             const errorList = await analyze_1.default(files);
+            core.info("Errors:");
+            core.info(JSON.stringify(errorList, null, 2));
             return [errorList, errorList.length === 0];
         });
         await core.group("Finish checking", async () => {

@@ -26,7 +26,15 @@ const main = async (): Promise<void> => {
 
     const [errors, success] = await core.group("Analyze files", async () => {
       const files = await fg(core.getInput("file"));
+
+      core.info("Input files:");
+      files.forEach((file) => core.info(file));
+
       const errorList = await analyze(files);
+
+      core.info("Errors:");
+      core.info(JSON.stringify(errorList, null, 2));
+
       return [errorList, errorList.length === 0];
     });
 
