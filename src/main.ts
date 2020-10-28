@@ -32,6 +32,7 @@ const main = async (): Promise<void> => {
       owner,
       repo,
       output: {
+        title: CHECK_NAME,
         summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
 
         // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
