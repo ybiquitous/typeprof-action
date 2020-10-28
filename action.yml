@@ -1,11 +1,14 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: "typeprof-action"
+description: "GitHub Action for Ruby TypeProf"
+author: "Masafumi Koba"
 inputs:
-  milliseconds: # change this
+  file:
+    description: "Analyzed files"
+    required: false
+    default: "**/*.rb"
+  token:
+    description: "GitHub token"
     required: true
-    description: 'input description here'
-    default: 'default value if applicable'
 runs:
-  using: 'node12'
-  main: 'dist/index.js'
+  using: "node14"
+  main: "dist/index.js"
