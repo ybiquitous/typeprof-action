@@ -3,6 +3,10 @@
 This is a GitHub Action for [Ruby TypeProf](https://github.com/ruby/typeprof).
 Every time your code is changed, TypeProf analyzes the code and this Action reports errors found.
 
+## Demo
+
+Here is an [example](https://github.com/ybiquitous/typeprof-action/actions/runs/334198641) of results.
+
 ## Usage
 
 For example, you can create `.github/workflows/typeprof.yml`
