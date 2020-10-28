@@ -24,10 +24,14 @@ const main = async (): Promise<void> => {
       return data.id;
     });
 
-    const [errors, success] = await core.group("Analyze files", async () => {
-      const files = await fg(core.getInput("file"));
+    const files = await fg(core.getInput("file"));
+    if (files.length === 0) {
+      core.warning("No input files.");
+      return;
+    }
 
-      core.info("Input files:");
+    const [errors, success] = await core.group("Analyze files", async () => {
+      core.info(`Input files (${files.length}):`);
       files.forEach((file) => core.info(file));
 
       const allErrors = await Promise.all(files.map(async (file) => analyze(file)));

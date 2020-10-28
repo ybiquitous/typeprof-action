@@ -104,9 +104,13 @@ const main = async () => {
             });
             return data.id;
         });
+        const files = await fast_glob_1.default(core.getInput("file"));
+        if (files.length === 0) {
+            core.warning("No input files.");
+            return;
+        }
         const [errors, success] = await core.group("Analyze files", async () => {
-            const files = await fast_glob_1.default(core.getInput("file"));
-            core.info("Input files:");
+            core.info(`Input files (${files.length}):`);
             files.forEach((file) => core.info(file));
             const allErrors = await Promise.all(files.map(async (file) => analyze_1.default(file)));
             const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
