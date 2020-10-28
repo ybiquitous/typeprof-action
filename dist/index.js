@@ -28,21 +28,20 @@ const parseOutput = (output) => {
     }
     return checks;
 };
-const analyze = async (files) => {
+const analyze = async (file) => {
     let cmd;
     let cmdArgs;
     if (fs_1.default.existsSync("Gemfile")) {
         cmd = "bundle";
-        cmdArgs = ["exec", "typeprof", "--verbose", ...files];
+        cmdArgs = ["exec", "typeprof", "--verbose", file];
     }
     else {
         cmd = "typeprof";
-        cmdArgs = ["--verbose", ...files];
+        cmdArgs = ["--verbose", file];
     }
     let stdout = "";
     await exec_1.exec(cmd, cmdArgs, {
         listeners: {
-            // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
             stdout: (data) => {
                 stdout += data.toString();
             },
@@ -109,9 +108,10 @@ const main = async () => {
             const files = await fast_glob_1.default(core.getInput("file"));
             core.info("Input files:");
             files.forEach((file) => core.info(file));
-            const errorList = await analyze_1.default(files);
+            const allErrors = await Promise.all(files.map(async (file) => analyze_1.default(file)));
+            const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
             core.info("Errors:");
-            core.info(JSON.stringify(errorList, null, 2));
+            errorList.forEach((err) => core.info(JSON.stringify(err)));
             return [errorList, errorList.length === 0];
         });
         await core.group("Finish checking", async () => {
@@ -125,7 +125,6 @@ const main = async () => {
                 output: {
                     title: CHECK_NAME,
                     summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
-                    // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
                     annotations: errors.map(({ path, line, message }) => ({
                         path,
                         message,

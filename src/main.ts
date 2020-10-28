@@ -30,10 +30,11 @@ const main = async (): Promise<void> => {
       core.info("Input files:");
       files.forEach((file) => core.info(file));
 
-      const errorList = await analyze(files);
+      const allErrors = await Promise.all(files.map(async (file) => analyze(file)));
+      const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
 
       core.info("Errors:");
-      core.info(JSON.stringify(errorList, null, 2));
+      errorList.forEach((err) => core.info(JSON.stringify(err)));
 
       return [errorList, errorList.length === 0];
     });
@@ -49,8 +50,6 @@ const main = async (): Promise<void> => {
         output: {
           title: CHECK_NAME,
           summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
-
-          // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
           annotations: errors.map(({ path, line, message }) => ({
             path,
             message,

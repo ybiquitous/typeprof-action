@@ -8,6 +8,7 @@
   },
   "reportUnusedDisableDirectives": true,
   "rules": {
-    "sort-imports": "off"
+    "sort-imports": "off",
+    "@typescript-eslint/prefer-readonly-parameter-types": "off"
   }
 }

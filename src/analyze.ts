@@ -26,21 +26,20 @@ const parseOutput = (output: string): TypeCheckError[] => {
   return checks;
 };
 
-const analyze = async (files: readonly string[]): Promise<TypeCheckError[]> => {
+const analyze = async (file: string): Promise<TypeCheckError[]> => {
   let cmd;
   let cmdArgs;
   if (fs.existsSync("Gemfile")) {
     cmd = "bundle";
-    cmdArgs = ["exec", "typeprof", "--verbose", ...files];
+    cmdArgs = ["exec", "typeprof", "--verbose", file];
   } else {
     cmd = "typeprof";
-    cmdArgs = ["--verbose", ...files];
+    cmdArgs = ["--verbose", file];
   }
 
   let stdout = "";
   await exec(cmd, cmdArgs, {
     listeners: {
-      // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
       stdout: (data) => {
         stdout += data.toString();
       },
