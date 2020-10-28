@@ -10,7 +10,7 @@ For example, you can create `.github/workflows/typeprof.yml`
 ```yaml
 name: TypeProf
 
-on: [push, pull_request]
+on: push
 
 jobs:
   run:
