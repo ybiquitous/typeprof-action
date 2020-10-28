@@ -20,7 +20,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "package": "ncc build --source-map --license licenses.txt",
-    "test": "echo \"TODO: jest\"",
+    "test": "echo \"No test\"",
     "all": "npm run build && npm run format && npm run lint && npm run package && npm test"
   },
   "dependencies": {
