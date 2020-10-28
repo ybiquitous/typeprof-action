@@ -12,47 +12,46 @@ const main = async (): Promise<void> => {
 
     const { owner, repo } = github.context.repo;
 
-    const {
-      data: { id: checkId },
-    } = await octokit.checks.create({
-      owner,
-      repo,
-      name: CHECK_NAME,
-      head_sha: github.context.sha,
-      status: "in_progress",
-      started_at: new Date().toISOString(),
+    const checkId = await core.group("Start checking", async () => {
+      const { data } = await octokit.checks.create({
+        owner,
+        repo,
+        name: CHECK_NAME,
+        head_sha: github.context.sha,
+        status: "in_progress",
+        started_at: new Date().toISOString(),
+      });
+      return data.id;
     });
 
-    const files = await fg(core.getInput("file"));
-    const errors = await analyze(files);
-    const success = errors.length === 0;
-
-    await octokit.checks.update({
-      check_run_id: checkId,
-      owner,
-      repo,
-      output: {
-        title: CHECK_NAME,
-        summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
-
-        // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
-        annotations: errors.map(({ path, line, message }) => ({
-          path,
-          message,
-          start_line: line,
-          end_line: line,
-          annotation_level: "failure",
-        })),
-      },
+    const [errors, success] = await core.group("Analyze files", async () => {
+      const files = await fg(core.getInput("file"));
+      const errorList = await analyze(files);
+      return [errorList, errorList.length === 0];
     });
 
-    await octokit.checks.update({
-      check_run_id: checkId,
-      owner,
-      repo,
-      conclusion: success ? "success" : "failure",
-      status: "completed",
-      completed_at: new Date().toISOString(),
+    await core.group("Finish checking", async () => {
+      await octokit.checks.update({
+        check_run_id: checkId,
+        owner,
+        repo,
+        conclusion: success ? "success" : "failure",
+        status: "completed",
+        completed_at: new Date().toISOString(),
+        output: {
+          title: CHECK_NAME,
+          summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
+
+          // eslint-disable-next-line @typescript-eslint/prefer-readonly-parameter-types
+          annotations: errors.map(({ path, line, message }) => ({
+            path,
+            message,
+            start_line: line,
+            end_line: line,
+            annotation_level: "failure",
+          })),
+        },
+      });
     });
 
     if (!success) {
