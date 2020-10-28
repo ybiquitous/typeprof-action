@@ -57,4 +57,4 @@ jobs:
       - run: gem install typeprof
       - uses: ./
         with:
-          file: *.rb
+          file: "*.rb"
