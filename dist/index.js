@@ -61,29 +61,48 @@ exports.default = analyze;
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const core_1 = __importDefault(__webpack_require__(2186));
-const github_1 = __importDefault(__webpack_require__(5438));
+const core = __importStar(__webpack_require__(2186));
+const github = __importStar(__webpack_require__(5438));
 const fast_glob_1 = __importDefault(__webpack_require__(3664));
 const analyze_1 = __importDefault(__webpack_require__(53));
 const CHECK_NAME = "TypeProf";
 // eslint-disable-next-line max-lines-per-function, max-statements
 const main = async () => {
     try {
-        const octokit = github_1.default.getOctokit(core_1.default.getInput("token"));
-        const { owner, repo } = github_1.default.context.repo;
+        const octokit = github.getOctokit(core.getInput("token"));
+        const { owner, repo } = github.context.repo;
         const { data: { id: checkId }, } = await octokit.checks.create({
             owner,
             repo,
             name: CHECK_NAME,
-            head_sha: github_1.default.context.sha,
+            head_sha: github.context.sha,
             status: "in_progress",
             started_at: new Date().toISOString(),
         });
-        const files = await fast_glob_1.default(core_1.default.getInput("file"));
+        const files = await fast_glob_1.default(core.getInput("file"));
         const errors = await analyze_1.default(files);
         const success = errors.length === 0;
         await octokit.checks.update({
@@ -111,15 +130,15 @@ const main = async () => {
             completed_at: new Date().toISOString(),
         });
         if (!success) {
-            core_1.default.setFailed(`TypeProf failed with ${errors.length} error(s).`);
+            core.setFailed(`TypeProf failed with ${errors.length} error(s).`);
         }
     }
     catch (error) {
         if (error instanceof Error) {
-            core_1.default.setFailed(error);
+            core.setFailed(error);
         }
         else {
-            core_1.default.setFailed("An unexpected error occurred.");
+            core.setFailed("An unexpected error occurred.");
         }
     }
 };
