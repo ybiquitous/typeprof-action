@@ -34,7 +34,8 @@ const main = async (): Promise<void> => {
       core.info(`Input files (${files.length}):`);
       files.forEach((file) => core.info(file));
 
-      const allErrors = await Promise.all(files.map(async (file) => analyze(file)));
+      const useBundler = core.getInput("use-bundler") === "true";
+      const allErrors = await Promise.all(files.map(async (file) => analyze(file, useBundler)));
       const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
 
       core.info("Errors:");
