@@ -3,15 +3,11 @@ require('./sourcemap-register.js');module.exports =
 /******/ 	var __webpack_modules__ = ({
 
 /***/ 53:
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-const fs_1 = __importDefault(__webpack_require__(5747));
 const exec_1 = __webpack_require__(1514);
 const PATTERN = /^(?<path>[^:]+):(?<line>\d+): (?<message>.+)$/u;
 const parseOutput = (output) => {
@@ -28,10 +24,10 @@ const parseOutput = (output) => {
     }
     return checks;
 };
-const analyze = async (file) => {
+const analyze = async (file, useBundler) => {
     let cmd;
     let cmdArgs;
-    if (fs_1.default.existsSync("Gemfile")) {
+    if (useBundler) {
         cmd = "bundle";
         cmdArgs = ["exec", "typeprof", "--verbose", file];
     }
@@ -112,7 +108,8 @@ const main = async () => {
         const [errors, success] = await core.group("Analyze files", async () => {
             core.info(`Input files (${files.length}):`);
             files.forEach((file) => core.info(file));
-            const allErrors = await Promise.all(files.map(async (file) => analyze_1.default(file)));
+            const useBundler = core.getInput("use-bundler") === "true";
+            const allErrors = await Promise.all(files.map(async (file) => analyze_1.default(file, useBundler)));
             const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
             core.info("Errors:");
             errorList.forEach((err) => core.info(JSON.stringify(err)));

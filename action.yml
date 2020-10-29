@@ -9,6 +9,10 @@ inputs:
     description: "GitHub token"
     required: false
     default: ${{ github.token }}
+  use-bundler:
+    description: "Use Bundler"
+    required: false
+    default: false
 runs:
   using: "node12"
   main: "dist/index.js"

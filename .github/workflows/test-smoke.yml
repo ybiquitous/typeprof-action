@@ -41,6 +41,7 @@ jobs:
         with:
           file: test/smoke/invalid*.rb
           token: ${{ secrets.GITHUB_TOKEN }}
+          use-bundler: true
         continue-on-error: true
 
   no-files:

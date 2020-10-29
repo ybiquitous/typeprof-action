@@ -1,4 +1,3 @@
-import fs from "fs";
 import { exec } from "@actions/exec";
 
 type TypeCheckError = {
@@ -26,10 +25,10 @@ const parseOutput = (output: string): TypeCheckError[] => {
   return checks;
 };
 
-const analyze = async (file: string): Promise<TypeCheckError[]> => {
+const analyze = async (file: string, useBundler: boolean): Promise<TypeCheckError[]> => {
   let cmd;
   let cmdArgs;
-  if (fs.existsSync("Gemfile")) {
+  if (useBundler) {
     cmd = "bundle";
     cmdArgs = ["exec", "typeprof", "--verbose", file];
   } else {

@@ -30,6 +30,7 @@ jobs:
           file: lib/foo.rb
           # file: script/*.rb
           # token: ${{ secrets.YOUR_GITHUB_TOKEN }}
+          # use-bundler: true
 ```
 
 See also [`action.yml`](action.yml) about the available options.
