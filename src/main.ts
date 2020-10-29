@@ -30,7 +30,7 @@ const main = async (): Promise<void> => {
       return;
     }
 
-    const [errors, success] = await core.group("Analyze files", async () => {
+    const errors = await core.group("Analyze files", async () => {
       core.info(`Input files (${files.length}):`);
       files.forEach((file) => core.info(file));
 
@@ -40,10 +40,26 @@ const main = async (): Promise<void> => {
 
       core.info(`${errorList.length} error(s) found.`);
 
-      return [errorList, errorList.length === 0];
+      return errorList;
     });
 
     await core.group("Finish checking", async () => {
+      // NOTE: The maximum size of annotations is limited to 50 by GitHub.
+      const LIMIT = 50;
+      const limitedErrors = errors.slice(0, LIMIT);
+      let summary;
+      if (errors.length === 0) {
+        summary = "No type errors.";
+      } else if (errors.length === 1) {
+        summary = `**${errors.length}** type error found.`;
+      } else if (errors.length === limitedErrors.length) {
+        summary = `**${errors.length}** type errors found.`;
+      } else {
+        summary = `**${errors.length}** type errors found, but reported errors are limited to ${LIMIT}.`;
+      }
+
+      const success = errors.length === 0;
+
       await octokit.checks.update({
         check_run_id: checkId,
         owner,
@@ -53,10 +69,8 @@ const main = async (): Promise<void> => {
         completed_at: new Date().toISOString(),
         output: {
           title: CHECK_NAME,
-          summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
-
-          // NOTE: The maximum size of annotations is limited to 50 by GitHub.
-          annotations: errors.slice(0, 50).map(({ path, line, message }) => ({
+          summary,
+          annotations: limitedErrors.map(({ path, line, message }) => ({
             path,
             message,
             start_line: line,
@@ -67,7 +81,7 @@ const main = async (): Promise<void> => {
       });
     });
 
-    if (!success) {
+    if (errors.length !== 0) {
       core.setFailed(`TypeProf failed with ${errors.length} error(s).`);
     }
   } catch (error: unknown) {
