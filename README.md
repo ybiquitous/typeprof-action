@@ -9,7 +9,7 @@ Here is an [example](https://github.com/ybiquitous/typeprof-action/actions/runs/
 
 ## Usage
 
-For example, you can create `.github/workflows/typeprof.yml`
+For example, you can create `.github/workflows/typeprof.yml` as follows:
 
 ```yaml
 name: TypeProf
