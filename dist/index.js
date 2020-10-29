@@ -111,8 +111,7 @@ const main = async () => {
             const useBundler = core.getInput("use-bundler") === "true";
             const allErrors = await Promise.all(files.map(async (file) => analyze_1.default(file, useBundler)));
             const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
-            core.info("Errors:");
-            errorList.forEach((err) => core.info(JSON.stringify(err)));
+            core.info(`${errorList.length} error(s) found.`);
             return [errorList, errorList.length === 0];
         });
         await core.group("Finish checking", async () => {

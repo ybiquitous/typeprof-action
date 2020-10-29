@@ -38,8 +38,7 @@ const main = async (): Promise<void> => {
       const allErrors = await Promise.all(files.map(async (file) => analyze(file, useBundler)));
       const errorList = allErrors.reduce((total, errs) => total.concat(errs), []);
 
-      core.info("Errors:");
-      errorList.forEach((err) => core.info(JSON.stringify(err)));
+      core.info(`${errorList.length} error(s) found.`);
 
       return [errorList, errorList.length === 0];
     });
