@@ -54,7 +54,9 @@ const main = async (): Promise<void> => {
         output: {
           title: CHECK_NAME,
           summary: success ? "No errors found." : `**${errors.length}** error(s) found.`,
-          annotations: errors.map(({ path, line, message }) => ({
+
+          // NOTE: The maximum size of annotations is limited to 50 by GitHub.
+          annotations: errors.slice(0, 50).map(({ path, line, message }) => ({
             path,
             message,
             start_line: line,
